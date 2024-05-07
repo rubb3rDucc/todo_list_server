@@ -1,18 +1,16 @@
 require('dotenv').config();
 const { client } = require('./db');
-// const todoController = require('./database/models/todo');
 
+const bcrypt = require("bcrypt");
 const express = require('express');
 const cors = require("cors");
 const bodyParser = require('body-parser');
-// const pgSession = require('connect-pg-simple');
-var fs = require('fs');
+const fs = require('fs');
 const { resolve } = require('path');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-// const postgreStore = new pgSession(session);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
@@ -34,10 +32,10 @@ async function findUserByUsername(username_data) {
             [
                 username_data
             ],
-            );
+        );
 
         // return users;
-        return users.rows[0];
+        return users.rows;
     }
     catch (ex) {
         throw ex;
@@ -52,7 +50,7 @@ async function findUserByEmail(email_data) {
             [
                 email_data
             ],
-            );
+        );
 
         // return users;
         return users.rows[0];
@@ -72,16 +70,15 @@ const getTodos = async (request, response) => {
 // TODOSs
 
 // api get all todos for user_id
-app.get('/todo/byUserId', async (req, res) => {
+app.post('/todo/byUserId', async (req, res) => {
     let { userId } = req.body;
 
-    if (!userId) res.status(401).send({ "message": "userId required" });
-    
+    // if (!userId) res.status(401).send({ "message": "userId required" });
+
     let data = await client.query('SELECT * FROM todo WHERE user_id = $1', [userId]);
-
-    res.send(data.rows);
+    res.send({ data });
+    // console.log(data)
 });
-
 
 // api get a todo
 // app.get('/todo', async (req, res) => {
@@ -92,6 +89,7 @@ app.get('/todo/byUserId', async (req, res) => {
 // });
 
 // api get all todos for specific user id
+
 app.get('/todo', async (req, res) => {
     await client.query('SELECT * FROM todo WHERE user_id = $1', [req.body[0].id],
         (err, results) => {
@@ -113,35 +111,41 @@ app.get('/todo', async (req, res) => {
             if (err) throw err;
             res.send(results.rows);
         });
-        // res.send(await findUserByEmail(email));
+    // res.send(await findUserByEmail(email));
 });
 
 // delete a specific todo
 app.delete('/todo', async (req, res) => {
     // console.log(req.body[0].id);
-    await client.query('DELETE FROM todo WHERE todo_id = $1', [req.body[0].todo_id],
+    if (!req.body.todo_id) return "missing todo_id";
+
+    await client.query('DELETE FROM todo WHERE todo_id = $1', [req.body.todo_id],
         (err, results) => {
             if (err) res.status(500).send(JSON.stringify(err));
             console.log(results);
-            res.status(200).send(`User modified with ID: ${req.body[0].todo_id}`);
+            res.status(200).send(`User modified with ID: ${req.body.todo_id}`);
         });
 });
 
 // add a new todo with user_id and todo_id
 app.post('/todo', async (req, res) => {
-    // console.log(req.body[0].id);
-    await client.query('insert into todo (user_id, todo_id, title, content, completed) VALUES ($1, $2, $3, $4, $5);',
+    // console.log(req.body[0].user_id);
+    if (!req.body.user_id) return "missing user_id";
+
+    await client.query('insert into todo (user_id, todo_id, title, content, completed) VALUES ($1, $2, $3, $4, $5)',
         [
-            req.body[0].user_id,
-            req.body[0].todo_id,
-            req.body[0].title,
-            req.body[0].content,
-            req.body[0].completed,
+            req.body.user_id,
+            req.body.todo_id,
+            req.body.title,
+
+            req.body.content,
+            req.body.completed,
         ],
         (err, results) => {
             if (err) res.status(500).send(JSON.stringify(err));
+            // if (err) res.status(500).send(JSON.stringify(err));
             console.log(results);
-            res.status(200).send(`Rows added: ${results.rowCount}`)
+            res.status(200).send(`Rows added: ${results.rowCount}`);
         });
 });
 
@@ -153,6 +157,8 @@ app.put('/todo', async (req, res) => {
         content,
         completed } = req.body[0];
 
+    // catch
+
     await client.query(
         'UPDATE todo SET title = $1, content = $2, completed = $3 WHERE todo_id = $4 RETURNING *',
         [
@@ -163,7 +169,7 @@ app.put('/todo', async (req, res) => {
         ],
         (error, results) => {
             if (error) {
-                res.status(500).send(JSON.stringify(err));
+                res.status(500).send(JSON.stringify(error));
             }
             console.log(results);
             res.status(200).send(`User modified with ID: ${todo_id}`)
@@ -171,18 +177,47 @@ app.put('/todo', async (req, res) => {
     )
 });
 
+// toggle the complete/not complete
+app.put('/todo/toggleCompleted', async (req, res) => {
+    const { todo_id, user_id, completed } = req.body;
+    // console.log(todo_id, user_id, completed);
+    // if (!user_id || !todo_id || !completed)
+    // {
+    //     return "Missing Info for toggling the todo completed";
+    // }
+    
+    // console.log(todo_id, user_id, completed);
+
+    await client.query('UPDATE todo SET completed = $1 WHERE todo_id = $2 AND user_id = $3 RETURNING *',
+        [
+            completed,
+            todo_id,
+            user_id
+        ],
+        (err, results) => {
+            if (err) 
+            {
+                res.status(500).send(JSON.stringify(err));
+            }
+            // console.log(results);
+            res.status(200).send(`Todo with ID: ${todo_id} modified for user ID: ${user_id}`);
+        }
+    );
+
+});
+
 // USERS
 
 // get login user details by email
 app.get('/user', async (req, res) => {
     let { email } = req.body;
-    
+
     if (!email) {
         res.status(401).send({ "message": "all information required" });
         return;
     }
     res.send(await findUserByEmail(email));
-})
+});
 
 // add new user
 app.post('/user', async (req, res) => {
@@ -214,7 +249,43 @@ app.post('/user', async (req, res) => {
             if (err) throw err;
         });
     console.log(`New user added to user_login_data table.`)
-})
+});
+
+// login checks passed in username and password, gives a token when they're matches
+app.use('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        console.log(req.body);
+
+        // get username 
+        const user = await findUserByUsername(username);
+        console.log(user[0]);
+
+        if (user[0].length === 0) {
+            return res.status(401).json('ERROR: username is incorrect.');
+        }
+
+        // check if incoming password is the same as db password
+        // const validPassword = await bcrypt.compare(
+        //     password,
+        //     user[0].password,
+        // );
+        const validPassword = password === user[0].password;
+
+        if (!validPassword) {
+            return res.status(401).json('ERROR: Password is incorrect.');
+        }
+
+        // set token
+        res.send({
+            token: 'test123'
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json('Server Error');
+    }
+});
 
 // delete existing user
 
