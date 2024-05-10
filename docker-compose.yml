@@ -1,0 +1,14 @@
+version: '3'
+services:
+  server:
+    # will build ./docker/server/Dockerfile
+    build: ./docker/server
+    ports:
+     - "8000:8000"
+  db:
+    # will build ./docker/db/Dockerfile
+    build: ./docker/db
+    ports:
+      - "3306:5432"
+    volumes:
+     - .:/code
