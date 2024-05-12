@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="1"
+            failures="1"
+            tests="1">
+
+  <testsuite name="with-page-objects.google"
+    errors="1" failures="1" hostname="" id="" package="with-page-objects" skipped="0"
+    tests="1" time="19.93" timestamp="">
+  
+    <testcase name="should find nightwatch.js in results" classname="with-page-objects.google" time="9.169" assertions="4">
+
+    
+
+    
+
+      <failure message="Expected element @menu &lt;#hdtb-msb&gt; to be visible - element was not found - expected &#34;visible&#34; but got: &#34;not found&#34; (5101ms)">    at DescribeInstance.&lt;anonymous&gt; (/Users/nolimits/Work/todo_list_server/nightwatch/examples/with-page-objects/google.js:27:24)</failure>
+
+    
+    <error type="error"><![CDATA[
+    NoSuchElementError: Unable to locate element: #hdtb-msb using css selector
+    at throwDecodedError (/Users/nolimits/Work/todo_list_server/node_modules/selenium-webdriver/lib/error.js:521:15)
+    at ChromeDriver.handleErrorResponse (/Users/nolimits/Work/todo_list_server/node_modules/nightwatch/lib/transport/selenium-webdriver/index.js:400:7)
+    at TransportActions.makeResult (/Users/nolimits/Work/todo_list_server/node_modules/nightwatch/lib/transport/selenium-webdriver/actions.js:85:20)
+    at Object.locateMultipleElements (/Users/nolimits/Work/todo_list_server/node_modules/nightwatch/lib/transport/selenium-webdriver/actions.js:71:21)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async LocateElement.findElement (/Users/nolimits/Work/todo_list_server/node_modules/nightwatch/lib/element/locator.js:167:20)
+    ]]></error>
+    
+    </testcase>
+  
+
+  
+    <system-err>
+       NoSuchElementError
+   Unable to locate element: #hdtb-msb using css selector
+
+    Try fixing by :
+    1. Please inspect the html before the step
+    2. Verify if an element with the mentioned selector is present in the DOM tree
+    </system-err>
+  
+
+    
+
+  
+  </testsuite>
+</testsuites>
