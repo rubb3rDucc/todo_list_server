@@ -1,1 +1,1 @@
-{"modules":{"api/get-api-tests":{"modulePath":"/Users/nolimits/Work/todo_list_server/nightwatch/api/get-api-tests.js","status":"pass"}}}
+{"modules":{"get-api-tests":{"modulePath":"/Users/nolimits/Work/todo_list_server/nightwatch/api/get-api-tests.js","status":"fail"}}}
