@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="0"
+            tests="1">
+
+  <testsuite name="api.get-api-tests"
+    errors="0" failures="0" hostname="" id="" package="get-api-tests" skipped="0"
+    tests="1" time="0.06400" timestamp="">
+  
+    <testcase name="gets all todos" classname="api.get-api-tests" time="0.03100" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+
+  
+
+    
+
+  
+  </testsuite>
+</testsuites>

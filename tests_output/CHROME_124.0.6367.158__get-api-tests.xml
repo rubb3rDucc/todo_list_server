@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="1"
+            failures="0"
+            tests="1">
+
+  <testsuite name="get-api-tests"
+    errors="1" failures="0" hostname="" id="" package="get-api-tests" skipped="0"
+    tests="1" time="0.1230" timestamp="">
+  
+    <testcase name="gets all todos" classname="get-api-tests" time="0.06000" assertions="0">
+    <error type="error"><![CDATA[
+    AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1117:18)
+    at afterConnectMultiple (node:net:1684:7)
+    ]]></error>
+    
+    </testcase>
+  
+
+  
+    <system-err>
+       AggregateError
+   
+    </system-err>
+  
+
+    
+
+  
+  </testsuite>
+</testsuites>
