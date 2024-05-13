@@ -1,8 +1,13 @@
-const { client } = require('./db');
+const { client } = require('../db.js');
 const express = require('express');
 const app = express();
 
+const bodyParser = require('body-parser');
 const helpers = require("./helpers");
+
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // USERS
 

@@ -1,32 +1,46 @@
-const { client } = require('./db');
+const { client } = require('../db.js');
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const helpers = require("./helpers");
+
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // TODOSs
 
 // api get all todos for user_id
-app.post('/todo/byUserId', async (req, res) => {
+app.get('/todo/byUserId', async (req, res) => {
+    if(req.body === undefined) throw "req is undefined!";
+
+    // console.log(req.body);
     let { userId } = req.body;
-    // if (!userId) res.status(401).send({ "message": "userId required" });
-    let data = await client.query('SELECT * FROM todo WHERE user_id = $1', [userId]);
-    res.send({ data });
-});
-
-// api get all todos for specific user id
-app.get('/todo', async (req, res) => {
-    let { id } = req.body[0];
-
-    if (!id) res.status(401).send({ "message": "user_id required" });
-
-    await client.query('SELECT * FROM todo WHERE user_id = $1', [id],
+    
+    if (!userId) res.status(401).send({ "message": "userId required" });
+    
+    await client.query('SELECT * FROM todo_items WHERE user_id = $1', [userId],
         (err, results) => {
             if (err) throw err;
             res.send(results.rows);
         });
 });
 
+// // api get all todos for specific user id
+// app.get('/todo', async (req, res) => {
+//     let { id } = req.body[0];
+
+//     if (!id) res.status(401).send({ "message": "user_id required" });
+
+//     await client.query('SELECT * FROM todo WHERE user_id = $1', [id],
+//         (err, results) => {
+//             if (err) throw err;
+//             res.send(results.rows);
+//         });
+// });
+
 // api get specific todo by specific todo id
+
 app.get('/todo', async (req, res) => {
     let { todo_id } = req.body;
 
@@ -109,7 +123,7 @@ app.put('/todo/toggleCompleted', async (req, res) => {
     // {
     //     return "Missing Info for toggling the todo completed";
     // }
-    
+
     // console.log(todo_id, user_id, completed);
 
     await client.query('UPDATE todo SET completed = $1 WHERE todo_id = $2 AND user_id = $3 RETURNING *',
@@ -119,8 +133,7 @@ app.put('/todo/toggleCompleted', async (req, res) => {
             user_id
         ],
         (err, results) => {
-            if (err) 
-            {
+            if (err) {
                 res.status(500).send(JSON.stringify(err));
             }
             // console.log(results);
@@ -129,3 +142,5 @@ app.put('/todo/toggleCompleted', async (req, res) => {
     );
 
 });
+
+module.exports = app;
