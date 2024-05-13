@@ -1,14 +1,37 @@
-version: '3'
 services:
-  server:
-    # will build ./docker/server/Dockerfile
-    build: ./docker/server
+  # server:
+  #   # will build ./docker/server/Dockerfile
+  #   build: 
+  #   ports:
+  #     - "8000:8000"
+  mock-db:
+    container_name: "db"
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=todoapp
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=mock-db
     ports:
-     - "8000:8000"
-  db:
-    # will build ./docker/db/Dockerfile
-    build: ./docker/db
-    ports:
-      - "3306:5432"
+      - "5432:5432"
     volumes:
-     - .:/code
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+  server-mock:
+    container_name: "be"
+    ports:
+      - "7000:7000"
+    build: .
+    command: npm run test
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+    depends_on:
+      - mock-db
+    environment:
+      HOST: host.docker.internal
+      USER: todoapp
+      DB_PORT: 5432
+      DATABASE_URL: postgresql://todoapp:@host.docker.internal:5432/mock-db
+volumes:
+  pgdata:

@@ -8,7 +8,7 @@ const helmet = require("helmet");
 const morgan = require('morgan');
 const todosRoute = require('./api/todos');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 7000;
 const app = express();
 
 app.use('/', todosRoute);

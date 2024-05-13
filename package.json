@@ -13,6 +13,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
+    "chromedriver": "^124.0.3",
     "connect-pg-simple": "^9.0.0",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.0.0",
@@ -22,6 +23,7 @@
     "express-session": "^1.17.3",
     "helmet": "^7.1.0",
     "http-errors": "^2.0.0",
+    "i": "^0.3.7",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.2",

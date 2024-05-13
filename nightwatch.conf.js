@@ -14,7 +14,7 @@
 module.exports = {
   // An array of folders (excluding subfolders) where your tests are located;
   // if this is not specified, the test source must be passed as the second argument to the test runner.
-  src_folders: ['testing','nightwatch/examples'],
+  src_folders: ['nightwatch/api'],
 
   // See https://nightwatchjs.org/guide/concepts/page-object-model.html
   page_objects_path: ['nightwatch/page-objects'],
@@ -30,7 +30,9 @@ module.exports = {
   api_testing: {
     start_session: false,
     webdriver: {
-      start_process: false,
+      start_process: true,
+      server_path: "node_modules/.bin/chromedriver",
+      port: 9515
     }
   },
   "@nightwatch/apitesting" : {
@@ -79,7 +81,7 @@ module.exports = {
             //'--no-sandbox',
             //'--ignore-certificate-errors',
             //'--allow-insecure-localhost',
-            //'--headless'
+            '--headless'
           ]
         }
       },
