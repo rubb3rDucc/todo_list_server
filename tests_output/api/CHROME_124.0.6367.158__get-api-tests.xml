@@ -5,9 +5,9 @@
 
   <testsuite name="api.get-api-tests"
     errors="0" failures="0" hostname="" id="" package="get-api-tests" skipped="0"
-    tests="1" time="0.4680" timestamp="">
+    tests="1" time="0.07900" timestamp="">
   
-    <testcase name="get api test" classname="api.get-api-tests" time="0.2330" assertions="3">
+    <testcase name="gets all todos" classname="api.get-api-tests" time="0.03900" assertions="3">
 
     
 
